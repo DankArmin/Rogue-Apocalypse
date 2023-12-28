@@ -20,6 +20,29 @@ var head_bob_time = 0.0
 @export var base_fov = 85.0
 @export var fov_change = 1.5
 
+@onready var ledge_detection_downward_ray = $Head/LedgeCheckerHolder/LedgeDetectionDownwardRay
+@onready var ledge_detection_forward_ray = $Head/LedgeDetectionForwardRay
+@onready var ledge_checker_holder = $Head/LedgeCheckerHolder
+@onready var ledge_marker = $Head/LedgeCheckerHolder/LedgeDetectionDownwardRay/LedgeMarker
+
+var is_holding_on_to_ledge = false
+
+func ledge_detect():
+	var first_hit_point = ledge_detection_forward_ray.get_collision_point()
+	var second_hit_point = ledge_detection_downward_ray.get_collision_point()
+	
+	var offset = Vector3(0,3,0)
+	if ledge_detection_forward_ray.is_colliding():
+		ledge_checker_holder.global_transform.origin = first_hit_point + offset
+		ledge_marker.global_transform.origin = second_hit_point
+		
+		ledge_marker.visible = true
+		ledge_detection_downward_ray.enabled = true
+		
+	else :
+		ledge_marker.visible = false
+		ledge_detection_downward_ray.enabled = false
+
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
@@ -33,6 +56,7 @@ func _unhandled_input(event):
 
 
 func _physics_process(delta):
+	ledge_detect()
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 

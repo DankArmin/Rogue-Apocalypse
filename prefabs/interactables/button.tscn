@@ -1,0 +1,35 @@
+[gd_scene load_steps=7 format=3 uid="uid://bhawd4u4f141c"]
+
+[ext_resource type="Script" path="res://prefabs/systems/interactables/interactable.gd" id="1_4vwxx"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fe4s6"]
+albedo_color = Color(0.439216, 0.439216, 0.439216, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_dn6y0"]
+material = SubResource("StandardMaterial3D_fe4s6")
+size = Vector3(1, 0.2, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rek4m"]
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_2s7t5"]
+material = SubResource("StandardMaterial3D_rek4m")
+top_radius = 0.25
+bottom_radius = 0.25
+height = 0.1
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_pt3p0"]
+size = Vector3(1, 0.5, 1)
+
+[node name="Button" type="StaticBody3D"]
+script = ExtResource("1_4vwxx")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_dn6y0")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.138528, 0)
+mesh = SubResource("CylinderMesh_2s7t5")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_pt3p0")
