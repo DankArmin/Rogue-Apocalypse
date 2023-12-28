@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://cjvlmso3vishe"]
 
 [ext_resource type="PackedScene" uid="uid://2lau11r50i5f" path="res://prefabs/player/player.tscn" id="1_dk7kk"]
-[ext_resource type="Texture2D" uid="uid://cxc4lom2bva7f" path="res://prefabs/prototyping/templategrid_albedo.png" id="2_t8j8g"]
+[ext_resource type="Texture2D" uid="uid://dxtcve7nhs6mj" path="res://prefabs/prototyping/templategrid_albedo.tres" id="2_0wmft"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_kf5nb"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -17,7 +17,7 @@ tonemap_mode = 2
 glow_enabled = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_x7vhf"]
-albedo_texture = ExtResource("2_t8j8g")
+albedo_texture = ExtResource("2_0wmft")
 uv1_scale = Vector3(50, 50, 50)
 
 [node name="Root" type="Node3D"]
