@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://2lau11r50i5f"]
+
+[ext_resource type="Script" path="res://prefabs/player/player.gd" id="1_f5h5v"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_vi6v7"]
+height = 1.8
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_eot5h"]
+height = 1.8
+
+[node name="Player" type="CharacterBody3D"]
+script = ExtResource("1_f5h5v")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_vi6v7")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_eot5h")
+
+[node name="Head" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.787548, 0)
+
+[node name="FPSCamera" type="Camera3D" parent="Head"]
