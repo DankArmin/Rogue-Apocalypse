@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=3 uid="uid://cjvlmso3vishe"]
+
+[ext_resource type="PackedScene" uid="uid://2lau11r50i5f" path="res://prefabs/player/player.tscn" id="1_dk7kk"]
+
+[node name="Root" type="Node3D"]
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(10, 1, 10)
+
+[node name="Player" parent="." instance=ExtResource("1_dk7kk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1.84255, 1)
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.74152, 6.09962)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
