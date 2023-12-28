@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://cjvlmso3vishe"]
+[gd_scene load_steps=7 format=3 uid="uid://cjvlmso3vishe"]
 
 [ext_resource type="PackedScene" uid="uid://2lau11r50i5f" path="res://prefabs/player/player.tscn" id="1_dk7kk"]
+[ext_resource type="Texture2D" uid="uid://cxc4lom2bva7f" path="res://prefabs/prototyping/templategrid_albedo.png" id="2_t8j8g"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_kf5nb"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -15,6 +16,10 @@ sky = SubResource("Sky_em2ud")
 tonemap_mode = 2
 glow_enabled = true
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_x7vhf"]
+albedo_texture = ExtResource("2_t8j8g")
+uv1_scale = Vector3(50, 50, 50)
+
 [node name="Root" type="Node3D"]
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
@@ -24,12 +29,50 @@ shadow_enabled = true
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_byuub")
 
-[node name="CSGBox3D" type="CSGBox3D" parent="."]
-use_collision = true
-size = Vector3(10, 1, 10)
-
 [node name="Player" parent="." instance=ExtResource("1_dk7kk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1.84255, 1)
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.74152, 6.09962)
+
+[node name="Terrain" type="Node3D" parent="."]
+
+[node name="Floor" type="CSGBox3D" parent="Terrain"]
+use_collision = true
+size = Vector3(50, 1, 50)
+material = SubResource("StandardMaterial3D_x7vhf")
+
+[node name="Wall" type="CSGBox3D" parent="Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 3, 0)
+use_collision = true
+size = Vector3(1, 5, 50)
+
+[node name="Wall2" type="CSGBox3D" parent="Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 3, 0)
+use_collision = true
+size = Vector3(1, 5, 50)
+
+[node name="Wall3" type="CSGBox3D" parent="Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -25)
+use_collision = true
+size = Vector3(50, 5, 1)
+
+[node name="Wall4" type="CSGBox3D" parent="Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 25)
+use_collision = true
+size = Vector3(50, 5, 1)
+
+[node name="Box" type="CSGBox3D" parent="Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.42525, 1, 0)
+use_collision = true
+size = Vector3(4, 2, 4)
+
+[node name="Box2" type="CSGBox3D" parent="Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.42525, 1, -6)
+use_collision = true
+size = Vector3(4, 4, 4)
+
+[node name="Box3" type="CSGBox3D" parent="Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.42525, 1, -12)
+use_collision = true
+size = Vector3(4, 6, 4)
