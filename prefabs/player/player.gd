@@ -11,7 +11,7 @@ const JUMP_VELOCITY = 6.0
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 @onready var head = $Head
-@onready var fps_camera = $Head/FPSCamera
+@onready var fps_camera = $Head/ShakeableCamera/FPSCamera
 
 @export var head_bob_frequency = 2.0
 @export var head_bob_amplitude = 0.08

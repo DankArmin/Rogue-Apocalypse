@@ -1,6 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://2lau11r50i5f"]
+[gd_scene load_steps=11 format=3 uid="uid://2lau11r50i5f"]
 
 [ext_resource type="Script" path="res://prefabs/player/player.gd" id="1_f5h5v"]
+[ext_resource type="Script" path="res://prefabs/player/ShakeableCamera.gd" id="2_fw3m3"]
 [ext_resource type="Script" path="res://prefabs/systems/interactables/interact_ray.gd" id="2_y4bjj"]
 [ext_resource type="Texture2D" uid="uid://dxtcve7nhs6mj" path="res://prefabs/prototyping/templategrid_albedo.tres" id="3_rqocp"]
 
@@ -9,6 +10,10 @@ height = 1.8
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_eot5h"]
 height = 1.8
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_gqlii"]
+frequency = 0.8
+fractal_octaves = 4
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gstl4"]
 albedo_color = Color(1, 0, 0, 1)
@@ -30,17 +35,17 @@ mesh = SubResource("CapsuleMesh_eot5h")
 [node name="Head" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.787548, 0)
 
-[node name="LedgeDetectionForwardRay" type="RayCast3D" parent="Head"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
-target_position = Vector3(0, 0, -10)
+[node name="ShakeableCamera" type="Node3D" parent="Head"]
+script = ExtResource("2_fw3m3")
+noise = SubResource("FastNoiseLite_gqlii")
 
-[node name="FPSCamera" type="Camera3D" parent="Head"]
+[node name="FPSCamera" type="Camera3D" parent="Head/ShakeableCamera"]
 
-[node name="InteractRay" type="RayCast3D" parent="Head/FPSCamera"]
+[node name="InteractRay" type="RayCast3D" parent="Head/ShakeableCamera/FPSCamera"]
 target_position = Vector3(0, 0, -4)
 script = ExtResource("2_y4bjj")
 
-[node name="Prompt" type="Label" parent="Head/FPSCamera/InteractRay"]
+[node name="Prompt" type="Label" parent="Head/ShakeableCamera/FPSCamera/InteractRay"]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -54,6 +59,10 @@ grow_horizontal = 2
 grow_vertical = 2
 text = "Message [Key]"
 horizontal_alignment = 1
+
+[node name="LedgeDetectionForwardRay" type="RayCast3D" parent="Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+target_position = Vector3(0, 0, -10)
 
 [node name="LedgeCheckerHolder" type="Node3D" parent="Head"]
 
