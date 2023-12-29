@@ -26,6 +26,7 @@ var head_bob_time = 0.0
 @onready var ledge_marker = $Head/LedgeCheckerHolder/LedgeDetectionDownwardRay/LedgeMarker
 
 var is_holding_on_to_ledge = false
+var current_ledge_position : Vector3
 
 func ledge_detect():
 	var first_hit_point = ledge_detection_forward_ray.get_collision_point()
@@ -52,15 +53,21 @@ func _unhandled_input(event):
 	if event is InputEventMouseMotion: 
 		head.rotate_y(-event.relative.x * sensitivity)
 		fps_camera.rotate_x(-event.relative.y * sensitivity)
-		fps_camera.rotation.x = clamp(fps_camera.rotation.x, deg_to_rad(-40), deg_to_rad(60))
+		fps_camera.rotation.x = clamp(fps_camera.rotation.x, deg_to_rad(-85), deg_to_rad(60))
 
 
 func _physics_process(delta):
+	print(current_ledge_position)
 	ledge_detect()
-	if not is_on_floor():
+	if is_holding_on_to_ledge:
+		global_position = global_position.lerp(current_ledge_position, 15 * delta)
+		if Input.is_action_just_pressed("jump"):
+			is_holding_on_to_ledge = false
+	
+	if not is_on_floor() && !is_holding_on_to_ledge:
 		velocity.y -= gravity * delta
 
-	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
+	if Input.is_action_just_pressed("jump") and is_on_floor():
 		velocity.y = JUMP_VELOCITY
 
 	if Input.is_action_pressed("sprint"):
@@ -70,6 +77,17 @@ func _physics_process(delta):
 		
 	var input_dir = Input.get_vector("left", "right", "up", "down")
 	var direction = (head.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+	if !is_holding_on_to_ledge:
+		handle_movement(direction, delta)
+	
+	handle_head_bob(delta)
+	
+	handle_fov(delta)
+	
+	move_and_slide()
+
+
+func handle_movement(direction, delta):
 	if is_on_floor():
 		if direction:
 			velocity.x = direction.x * speed
@@ -80,15 +98,17 @@ func _physics_process(delta):
 	else:
 		velocity.x = lerp(velocity.x, direction.x * speed, delta * 2.5)
 		velocity.z = lerp(velocity.z, direction.z * speed, delta * 2.5)
-	
-	head_bob_time += delta * velocity.length() * float(is_on_floor())
-	fps_camera.transform.origin = head_bob(head_bob_time)
 
+
+func handle_fov(delta):
 	var velocity_clamped = clamp(velocity.length(), 0.5, sprint_speed * 2)
 	var target_fov = base_fov + fov_change * velocity_clamped
 	fps_camera.fov = lerp(fps_camera.fov, target_fov, delta * 8.0)
 
-	move_and_slide()
+
+func handle_head_bob(delta):
+	head_bob_time += delta * velocity.length() * float(is_on_floor())
+	fps_camera.transform.origin = head_bob(head_bob_time)
 
 
 func head_bob(time):
@@ -96,3 +116,14 @@ func head_bob(time):
 	pos.y = sin(head_bob_time * head_bob_frequency) * head_bob_amplitude
 	pos.x = cos(head_bob_time * head_bob_frequency / 2) * head_bob_amplitude
 	return pos
+
+
+#Ledge grabbing collision detection
+func _on_area_3d_body_entered(body):
+	if body.name != "Player": return
+	is_holding_on_to_ledge = true
+	velocity.y = 0
+	velocity.x = 0
+	current_ledge_position = ledge_marker.global_position
+	current_ledge_position.y = current_ledge_position.y - 1
+	
