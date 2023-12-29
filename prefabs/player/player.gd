@@ -61,7 +61,7 @@ func _physics_process(delta):
 	if is_holding_on_to_ledge:
 		global_position = global_position.lerp(current_ledge_position, 15 * delta)
 		if Input.is_action_just_pressed("jump"):
-			is_holding_on_to_ledge = false
+			handle_ledge_jump_up()
 	
 	if not is_on_floor() && !is_holding_on_to_ledge:
 		velocity.y -= gravity * delta
@@ -126,4 +126,8 @@ func _on_area_3d_body_entered(body):
 		velocity.x = 0
 		current_ledge_position = ledge_marker.global_position
 		current_ledge_position.y = current_ledge_position.y - 1
-	
+
+
+func handle_ledge_jump_up():
+	velocity.y += 6.0
+	is_holding_on_to_ledge = false
