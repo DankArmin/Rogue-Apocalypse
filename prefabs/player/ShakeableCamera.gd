@@ -13,7 +13,7 @@ var shake := 0.0
 
 var time := 0.0
 
-@onready var camera := $FPSCamera as Camera3D 
+@onready var camera := $CamHolder as Node3D 
 @onready var initial_rotation := camera.rotation_degrees as Vector3
 
 

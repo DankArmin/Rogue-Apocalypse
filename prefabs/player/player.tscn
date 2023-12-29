@@ -11,7 +11,7 @@ height = 1.8
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_eot5h"]
 height = 1.8
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_gqlii"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_50hoq"]
 frequency = 0.8
 fractal_octaves = 4
 
@@ -37,15 +37,17 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.787548, 0)
 
 [node name="ShakeableCamera" type="Node3D" parent="Head"]
 script = ExtResource("2_fw3m3")
-noise = SubResource("FastNoiseLite_gqlii")
+noise = SubResource("FastNoiseLite_50hoq")
 
-[node name="FPSCamera" type="Camera3D" parent="Head/ShakeableCamera"]
+[node name="CamHolder" type="Node3D" parent="Head/ShakeableCamera"]
 
-[node name="InteractRay" type="RayCast3D" parent="Head/ShakeableCamera/FPSCamera"]
+[node name="FPSCamera" type="Camera3D" parent="Head/ShakeableCamera/CamHolder"]
+
+[node name="InteractRay" type="RayCast3D" parent="Head/ShakeableCamera/CamHolder/FPSCamera"]
 target_position = Vector3(0, 0, -4)
 script = ExtResource("2_y4bjj")
 
-[node name="Prompt" type="Label" parent="Head/ShakeableCamera/FPSCamera/InteractRay"]
+[node name="Prompt" type="Label" parent="Head/ShakeableCamera/CamHolder/FPSCamera/InteractRay"]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5

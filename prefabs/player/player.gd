@@ -11,7 +11,7 @@ const JUMP_VELOCITY = 6.0
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 @onready var head = $Head
-@onready var fps_camera = $Head/ShakeableCamera/FPSCamera
+@onready var fps_camera = $Head/ShakeableCamera/CamHolder/FPSCamera
 
 @export var head_bob_frequency = 2.0
 @export var head_bob_amplitude = 0.08
@@ -130,5 +130,5 @@ func _on_area_3d_body_entered(body):
 
 func handle_ledge_jump_up():
 	on_screen_shake.emit(0.25)
-	velocity.y += 6.0
+	velocity.y += 6.5
 	is_holding_on_to_ledge = false
