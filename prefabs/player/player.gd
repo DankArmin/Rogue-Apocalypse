@@ -57,7 +57,6 @@ func _unhandled_input(event):
 
 
 func _physics_process(delta):
-	print(current_ledge_position)
 	ledge_detect()
 	if is_holding_on_to_ledge:
 		global_position = global_position.lerp(current_ledge_position, 15 * delta)
@@ -94,7 +93,7 @@ func handle_movement(direction, delta):
 			velocity.z = direction.z * speed
 		else:
 			velocity.x = lerp(velocity.x, direction.x * speed, delta * 7.0)
-		velocity.z = lerp(velocity.z, direction.z * speed, delta * 7.0)
+			velocity.z = lerp(velocity.z, direction.z * speed, delta * 7.0)
 	else:
 		velocity.x = lerp(velocity.x, direction.x * speed, delta * 2.5)
 		velocity.z = lerp(velocity.z, direction.z * speed, delta * 2.5)
@@ -121,9 +120,10 @@ func head_bob(time):
 #Ledge grabbing collision detection
 func _on_area_3d_body_entered(body):
 	if body.name != "Player": return
-	is_holding_on_to_ledge = true
-	velocity.y = 0
-	velocity.x = 0
-	current_ledge_position = ledge_marker.global_position
-	current_ledge_position.y = current_ledge_position.y - 1
+	if !is_on_floor():
+		is_holding_on_to_ledge = true
+		velocity.y = 0
+		velocity.x = 0
+		current_ledge_position = ledge_marker.global_position
+		current_ledge_position.y = current_ledge_position.y - 1
 	
