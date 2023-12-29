@@ -16,10 +16,8 @@ var time := 0.0
 @onready var camera := $FPSCamera as Camera3D 
 @onready var initial_rotation := camera.rotation_degrees as Vector3
 
+
 func _process(delta):
-	if Input.is_action_just_pressed("interact"):
-		add_trauma(1)
-	
 	time += delta
 	shake = max(shake - delta * shake_reduction_rate, 0.0)
 	
@@ -40,5 +38,5 @@ func get_noise_from_seed(_seed: int):
 	return noise.get_noise_1d(time * noise_speed)
 
 
-func _on_fps_pump_shotgun_on_shoot():
-	pass
+func _on_player_on_screen_shake(amount):
+	add_trauma(amount)

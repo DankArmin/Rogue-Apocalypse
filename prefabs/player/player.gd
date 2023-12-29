@@ -28,6 +28,8 @@ var head_bob_time = 0.0
 var is_holding_on_to_ledge = false
 var current_ledge_position : Vector3
 
+signal on_screen_shake(amount)
+
 func ledge_detect():
 	var first_hit_point = ledge_detection_forward_ray.get_collision_point()
 	var second_hit_point = ledge_detection_downward_ray.get_collision_point()
@@ -36,12 +38,9 @@ func ledge_detect():
 	if ledge_detection_forward_ray.is_colliding():
 		ledge_checker_holder.global_transform.origin = first_hit_point + offset
 		ledge_marker.global_transform.origin = second_hit_point
-		
-		ledge_marker.visible = true
 		ledge_detection_downward_ray.enabled = true
 		
 	else :
-		ledge_marker.visible = false
 		ledge_detection_downward_ray.enabled = false
 
 
@@ -121,6 +120,7 @@ func head_bob(time):
 func _on_area_3d_body_entered(body):
 	if body.name != "Player": return
 	if !is_on_floor():
+		on_screen_shake.emit(0.5)
 		is_holding_on_to_ledge = true
 		velocity.y = 0
 		velocity.x = 0
@@ -129,5 +129,6 @@ func _on_area_3d_body_entered(body):
 
 
 func handle_ledge_jump_up():
+	on_screen_shake.emit(0.25)
 	velocity.y += 6.0
 	is_holding_on_to_ledge = false
