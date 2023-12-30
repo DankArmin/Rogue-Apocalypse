@@ -5,21 +5,27 @@ extends CharacterBody3D
 var speed
 @export var walk_speed = 5.0
 @export var sprint_speed = 8.0
+@export var crouch_speed = 2.5
 
 const JUMP_VELOCITY = 6.0
 
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
+#Camera
 @onready var head = $Head
 @onready var fps_camera = $Head/ShakeableCamera/CamHolder/FPSCamera
+@onready var shakeable_camera = $Head/ShakeableCamera
 
+#Head Bob
 @export var head_bob_frequency = 2.0
 @export var head_bob_amplitude = 0.08
 var head_bob_time = 0.0
 
+#FOV
 @export var base_fov = 85.0
 @export var fov_change = 1.5
 
+#Ledge Grabbing
 @onready var ledge_detection_downward_ray = $Head/LedgeCheckerHolder/LedgeDetectionDownwardRay
 @onready var ledge_detection_forward_ray = $Head/LedgeDetectionForwardRay
 @onready var ledge_checker_holder = $Head/LedgeCheckerHolder
@@ -28,10 +34,19 @@ var head_bob_time = 0.0
 var is_holding_on_to_ledge = false
 var current_ledge_position : Vector3
 
+#IK Arms
 @onready var right_arm_skeleton_ik = $Head/ShakeableCamera/CamHolder/FPSCamera/arm/Armature/Skeleton3D/SkeletonIK3D
 @onready var left_arm_skeleton_ik = $Head/ShakeableCamera/CamHolder/FPSCamera/arm2/Armature/Skeleton3D/SkeletonIK3D
 
+#ScreenShake
 signal on_screen_shake(amount)
+
+#Crouching
+var is_crouching = false
+@export var height_standing = 1.8
+@export var height_crouching = 0.8
+@onready var collision_shape_3d = $CollisionShape3D as CollisionShape3D
+
 
 func ledge_detect():
 	var first_hit_point = ledge_detection_forward_ray.get_collision_point()
@@ -55,10 +70,14 @@ func _unhandled_input(event):
 	if event is InputEventMouseMotion: 
 		head.rotate_y(-event.relative.x * sensitivity)
 		fps_camera.rotate_x(-event.relative.y * sensitivity)
-		fps_camera.rotation.x = clamp(fps_camera.rotation.x, deg_to_rad(-85), deg_to_rad(60))
+		fps_camera.rotation.x = clamp(fps_camera.rotation.x, deg_to_rad(-75), deg_to_rad(75))
 
 
 func _physics_process(delta):
+	if is_crouching:
+		collision_shape_3d.shape.height = lerp(collision_shape_3d.shape.height, height_crouching, 10 * delta)
+	else:
+		collision_shape_3d.shape.height = lerp(collision_shape_3d.shape.height, height_standing, 10 * delta)
 	ledge_detect()
 	if is_holding_on_to_ledge:
 		global_position = global_position.lerp(current_ledge_position, 15 * delta)
@@ -74,11 +93,14 @@ func _physics_process(delta):
 	
 	if not is_on_floor() && !is_holding_on_to_ledge:
 		velocity.y -= gravity * delta
-
-	if Input.is_action_just_pressed("jump") and is_on_floor():
+	
+	if Input.is_action_just_pressed("jump") and is_on_floor() and not is_crouching:
 		velocity.y = JUMP_VELOCITY
 
-	if Input.is_action_pressed("sprint"):
+	if is_crouching:
+		speed = crouch_speed
+		
+	elif Input.is_action_pressed("sprint"):
 		speed = sprint_speed
 	else:
 		speed = walk_speed
@@ -88,11 +110,16 @@ func _physics_process(delta):
 	if !is_holding_on_to_ledge:
 		handle_movement(direction, delta)
 	
+	if Input.is_action_just_pressed("crouch"):
+		crouch()
+	if Input.is_action_just_released("crouch"):
+		stand_up_from_crouch()
+	
 	handle_head_bob(delta)
 	
 	handle_fov(delta)
 	
-	camera_tilt(input_dir.x, delta)
+	camera_tilt(input_dir.x, input_dir.y, delta)
 	
 	move_and_slide()
 
@@ -146,6 +173,16 @@ func handle_ledge_jump_up():
 	is_holding_on_to_ledge = false
 
 
-func camera_tilt(x, delta):
+func camera_tilt(x, z, delta):
 	if fps_camera:
-		fps_camera.rotation.z = lerp_angle(fps_camera.rotation.z, -x * .1, 7.5 * delta)
+		shakeable_camera.rotation.z = lerp_angle(shakeable_camera.rotation.z, -x * .1, 7.5 * delta)
+		shakeable_camera.rotation.x = lerp_angle(shakeable_camera.rotation.x, z * .1, 7.5 * delta)
+
+
+func crouch():
+	is_crouching = true
+	collision_shape_3d.shape.height = height_crouching
+	
+
+func stand_up_from_crouch():
+	is_crouching = false
