@@ -92,6 +92,8 @@ func _physics_process(delta):
 	
 	handle_fov(delta)
 	
+	camera_tilt(input_dir.x, delta)
+	
 	move_and_slide()
 
 
@@ -142,3 +144,8 @@ func handle_ledge_jump_up():
 	on_screen_shake.emit(0.25)
 	velocity.y += 6.5
 	is_holding_on_to_ledge = false
+
+
+func camera_tilt(x, delta):
+	if fps_camera:
+		fps_camera.rotation.z = lerp_angle(fps_camera.rotation.z, -x * .1, 7.5 * delta)
