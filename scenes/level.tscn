@@ -14,8 +14,14 @@ sky_material = SubResource("ProceduralSkyMaterial_kf5nb")
 [sub_resource type="Environment" id="Environment_byuub"]
 background_mode = 2
 sky = SubResource("Sky_em2ud")
-tonemap_mode = 2
+tonemap_mode = 1
+ssao_enabled = true
+ssao_intensity = 1.5
+sdfgi_enabled = true
 glow_enabled = true
+glow_bloom = 0.03
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.01
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_x7vhf"]
 albedo_texture = ExtResource("2_0wmft")
