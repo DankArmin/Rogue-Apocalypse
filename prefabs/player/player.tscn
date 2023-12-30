@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://2lau11r50i5f"]
+[gd_scene load_steps=15 format=3 uid="uid://2lau11r50i5f"]
 
 [ext_resource type="Script" path="res://prefabs/player/player.gd" id="1_f5h5v"]
 [ext_resource type="Script" path="res://prefabs/player/ShakeableCamera.gd" id="2_fw3m3"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://dxtcve7nhs6mj" path="res://prefabs/prototyping/templategrid_albedo.tres" id="3_rqocp"]
 [ext_resource type="PackedScene" uid="uid://22u4xd2mkuxv" path="res://prefabs/prototyping/arm.glb" id="4_agtgf"]
 [ext_resource type="Script" path="res://prefabs/player/SkeletonIK3D.gd" id="5_hf14l"]
+[ext_resource type="Shader" path="res://prefabs/player/vignette.gdshader" id="6_x247n"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_vi6v7"]
 height = 1.8
@@ -15,6 +16,13 @@ height = 1.8
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_50hoq"]
 fractal_octaves = 4
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6s012"]
+shader = ExtResource("6_x247n")
+shader_parameter/blur_radius = 0.2
+shader_parameter/blur_amount = 1.0
+shader_parameter/blur_inner = 0.6
+shader_parameter/blur_outer = 0.66
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gstl4"]
 albedo_color = Color(1, 0, 0, 1)
@@ -82,6 +90,15 @@ root_bone = &"Bone"
 tip_bone = &"Bone.002"
 target_node = NodePath("../../../../../../../LedgeCheckerHolder/LedgeDetectionDownwardRay/LedgeMarker")
 script = ExtResource("5_hf14l")
+
+[node name="ColorRect" type="ColorRect" parent="Head/ShakeableCamera/CamHolder/FPSCamera"]
+material = SubResource("ShaderMaterial_6s012")
+use_parent_material = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="LedgeDetectionForwardRay" type="RayCast3D" parent="Head"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
