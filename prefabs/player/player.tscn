@@ -1,9 +1,11 @@
-[gd_scene load_steps=11 format=3 uid="uid://2lau11r50i5f"]
+[gd_scene load_steps=13 format=3 uid="uid://2lau11r50i5f"]
 
 [ext_resource type="Script" path="res://prefabs/player/player.gd" id="1_f5h5v"]
 [ext_resource type="Script" path="res://prefabs/player/ShakeableCamera.gd" id="2_fw3m3"]
 [ext_resource type="Script" path="res://prefabs/systems/interactables/interact_ray.gd" id="2_y4bjj"]
 [ext_resource type="Texture2D" uid="uid://dxtcve7nhs6mj" path="res://prefabs/prototyping/templategrid_albedo.tres" id="3_rqocp"]
+[ext_resource type="PackedScene" uid="uid://22u4xd2mkuxv" path="res://prefabs/prototyping/arm.glb" id="4_agtgf"]
+[ext_resource type="Script" path="res://prefabs/player/SkeletonIK3D.gd" id="5_hf14l"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_vi6v7"]
 height = 1.8
@@ -62,6 +64,26 @@ grow_vertical = 2
 text = "Message [Key]"
 horizontal_alignment = 1
 
+[node name="arm" parent="Head/ShakeableCamera/CamHolder/FPSCamera" instance=ExtResource("4_agtgf")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0.549001, -0.580329, 0)
+
+[node name="SkeletonIK3D" type="SkeletonIK3D" parent="Head/ShakeableCamera/CamHolder/FPSCamera/arm/Armature/Skeleton3D" index="1"]
+process_priority = 1
+root_bone = &"Bone"
+tip_bone = &"Bone.002"
+target_node = NodePath("../../../../../../../LedgeCheckerHolder/LedgeDetectionDownwardRay/LedgeMarker")
+script = ExtResource("5_hf14l")
+
+[node name="arm2" parent="Head/ShakeableCamera/CamHolder/FPSCamera" instance=ExtResource("4_agtgf")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -0.450999, -0.580329, 0)
+
+[node name="SkeletonIK3D" type="SkeletonIK3D" parent="Head/ShakeableCamera/CamHolder/FPSCamera/arm2/Armature/Skeleton3D" index="1"]
+process_priority = 1
+root_bone = &"Bone"
+tip_bone = &"Bone.002"
+target_node = NodePath("../../../../../../../LedgeCheckerHolder/LedgeDetectionDownwardRay/LedgeMarker")
+script = ExtResource("5_hf14l")
+
 [node name="LedgeDetectionForwardRay" type="RayCast3D" parent="Head"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
 target_position = Vector3(0, 0, -10)
@@ -99,3 +121,6 @@ texture = ExtResource("3_rqocp")
 
 [connection signal="on_screen_shake" from="." to="Head/ShakeableCamera" method="_on_player_on_screen_shake"]
 [connection signal="body_entered" from="Head/LedgeCheckerHolder/LedgeDetectionDownwardRay/LedgeMarker/Area3D" to="." method="_on_area_3d_body_entered"]
+
+[editable path="Head/ShakeableCamera/CamHolder/FPSCamera/arm"]
+[editable path="Head/ShakeableCamera/CamHolder/FPSCamera/arm2"]
