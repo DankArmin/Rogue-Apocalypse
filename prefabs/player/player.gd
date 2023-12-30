@@ -34,10 +34,6 @@ var head_bob_time = 0.0
 var is_holding_on_to_ledge = false
 var current_ledge_position : Vector3
 
-#IK Arms
-@onready var right_arm_skeleton_ik = $Head/ShakeableCamera/CamHolder/FPSCamera/arm/Armature/Skeleton3D/SkeletonIK3D
-@onready var left_arm_skeleton_ik = $Head/ShakeableCamera/CamHolder/FPSCamera/arm2/Armature/Skeleton3D/SkeletonIK3D
-
 #ScreenShake
 signal on_screen_shake(amount)
 
@@ -81,15 +77,13 @@ func _physics_process(delta):
 	ledge_detect()
 	if is_holding_on_to_ledge:
 		global_position = global_position.lerp(current_ledge_position, 15 * delta)
-		right_arm_skeleton_ik.interpolation += 10 * delta
-		left_arm_skeleton_ik.interpolation += 10 * delta
+		ledge_marker.global_position.y += 10
+		ledge_marker.get_child(0).monitoring = false
 		if Input.is_action_just_pressed("jump"):
 			handle_ledge_jump_up()
-	else:
-		right_arm_skeleton_ik.interpolation -= 10 * delta
-		left_arm_skeleton_ik.interpolation -= 10 * delta
-	right_arm_skeleton_ik.interpolation = clamp(right_arm_skeleton_ik.interpolation, 0, 1)
-	left_arm_skeleton_ik.interpolation = clamp(left_arm_skeleton_ik.interpolation, 0, 1)
+	
+	if is_on_floor():
+		ledge_marker.get_child(0).monitoring = true
 	
 	if not is_on_floor() && !is_holding_on_to_ledge:
 		velocity.y -= gravity * delta
