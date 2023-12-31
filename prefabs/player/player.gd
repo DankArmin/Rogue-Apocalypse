@@ -43,6 +43,10 @@ var is_crouching = false
 @export var height_crouching = 0.8
 @onready var collision_shape_3d = $CollisionShape3D as CollisionShape3D
 
+# Land Shake
+var has_landed : bool = false
+var air_time : float = 0.0
+
 
 func ledge_detect():
 	var first_hit_point = ledge_detection_forward_ray.get_collision_point()
@@ -76,6 +80,7 @@ func _physics_process(delta):
 		collision_shape_3d.shape.height = lerp(collision_shape_3d.shape.height, height_standing, 10 * delta)
 	ledge_detect()
 	if is_holding_on_to_ledge:
+		air_time = 0.0
 		global_position = global_position.lerp(current_ledge_position, 15 * delta)
 		ledge_marker.global_position.y += 10
 		ledge_marker.get_child(0).monitoring = false
@@ -83,9 +88,16 @@ func _physics_process(delta):
 			handle_ledge_jump_up()
 	
 	if is_on_floor():
+		if !has_landed:
+			has_landed = true
+			on_screen_shake.emit(air_time / 2)
+			air_time = 0.0
 		ledge_marker.get_child(0).monitoring = true
 	
 	if not is_on_floor() && !is_holding_on_to_ledge:
+		air_time += delta
+		if has_landed:
+			has_landed = false
 		velocity.y -= gravity * delta
 	
 	if Input.is_action_just_pressed("jump") and is_on_floor() and not is_crouching:
@@ -153,7 +165,7 @@ func head_bob(time):
 func _on_area_3d_body_entered(body):
 	if body.name != "Player": return
 	if !is_on_floor():
-		on_screen_shake.emit(0.5)
+		on_screen_shake.emit(1)
 		is_holding_on_to_ledge = true
 		velocity.y = 0
 		velocity.x = 0
@@ -162,7 +174,7 @@ func _on_area_3d_body_entered(body):
 
 
 func handle_ledge_jump_up():
-	on_screen_shake.emit(0.25)
+	on_screen_shake.emit(1)
 	velocity.y += 6.5
 	is_holding_on_to_ledge = false
 
