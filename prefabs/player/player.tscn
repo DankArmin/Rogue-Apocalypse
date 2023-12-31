@@ -75,6 +75,9 @@ grow_vertical = 2
 text = "Message [Key]"
 horizontal_alignment = 1
 
+[node name="GrabPosition" type="Node3D" parent="Head/ShakeableCamera/CamHolder/FPSCamera/InteractRay"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2)
+
 [node name="ColorRect" type="ColorRect" parent="Head/ShakeableCamera/CamHolder/FPSCamera"]
 material = SubResource("ShaderMaterial_6s012")
 use_parent_material = true

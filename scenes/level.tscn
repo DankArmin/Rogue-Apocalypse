@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://cjvlmso3vishe"]
+[gd_scene load_steps=11 format=3 uid="uid://cjvlmso3vishe"]
 
 [ext_resource type="PackedScene" uid="uid://2lau11r50i5f" path="res://prefabs/player/player.tscn" id="1_dk7kk"]
 [ext_resource type="Texture2D" uid="uid://dxtcve7nhs6mj" path="res://prefabs/prototyping/templategrid_albedo.tres" id="2_0wmft"]
@@ -29,6 +29,10 @@ uv1_scale = Vector3(50, 50, 50)
 
 [sub_resource type="PrismMesh" id="PrismMesh_5oqnf"]
 size = Vector3(17.81, 6, 3)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_uio44"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_mmyfe"]
 
 [node name="Root" type="Node3D"]
 
@@ -95,3 +99,12 @@ mesh = SubResource("PrismMesh_5oqnf")
 [node name="Button" parent="." instance=ExtResource("3_np1ax")]
 transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, -7.42525, 1.87474, -5.57107)
 prompt_message = "Button"
+
+[node name="RigidBody3D" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
+shape = SubResource("BoxShape3D_uio44")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D"]
+mesh = SubResource("BoxMesh_mmyfe")
