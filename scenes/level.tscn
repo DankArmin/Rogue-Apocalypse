@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://cjvlmso3vishe"]
+[gd_scene load_steps=14 format=3 uid="uid://cjvlmso3vishe"]
 
 [ext_resource type="PackedScene" uid="uid://2lau11r50i5f" path="res://prefabs/player/player.tscn" id="1_dk7kk"]
 [ext_resource type="Texture2D" uid="uid://dxtcve7nhs6mj" path="res://prefabs/prototyping/templategrid_albedo.tres" id="2_0wmft"]
@@ -24,8 +24,23 @@ volumetric_fog_enabled = true
 volumetric_fog_density = 0.01
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_x7vhf"]
+albedo_color = Color(0.45098, 0.45098, 0.45098, 1)
 albedo_texture = ExtResource("2_0wmft")
 uv1_scale = Vector3(50, 50, 50)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nvamr"]
+albedo_color = Color(1, 0.501961, 0.254902, 1)
+albedo_texture = ExtResource("2_0wmft")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jvcjd"]
+albedo_color = Color(1, 0.501961, 0.254902, 1)
+albedo_texture = ExtResource("2_0wmft")
+uv1_scale = Vector3(2, 2, 2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gswel"]
+albedo_color = Color(1, 0.501961, 0.254902, 1)
+albedo_texture = ExtResource("2_0wmft")
+uv1_scale = Vector3(2, 3, 2)
 
 [sub_resource type="PrismMesh" id="PrismMesh_5oqnf"]
 size = Vector3(17.81, 6, 3)
@@ -80,16 +95,19 @@ size = Vector3(50, 5, 1)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.42525, 1, 0)
 use_collision = true
 size = Vector3(4, 2, 4)
+material = SubResource("StandardMaterial3D_nvamr")
 
 [node name="Box2" type="CSGBox3D" parent="Terrain"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.42525, 1, -6)
 use_collision = true
 size = Vector3(4, 4, 4)
+material = SubResource("StandardMaterial3D_jvcjd")
 
 [node name="Box3" type="CSGBox3D" parent="Terrain"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.42525, 1, -12)
 use_collision = true
 size = Vector3(4, 6, 4)
+material = SubResource("StandardMaterial3D_gswel")
 
 [node name="CSGMesh3D" type="CSGMesh3D" parent="Terrain"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.58613, 1, -11.7035)
