@@ -56,7 +56,7 @@ var last_direction_z : float
 @export var height_sliding : float = 0.4
 var initial_slide_speed : float = 15.0
 var current_slide_speed : float
-var screen_shake_amount_on_slide : float = 0.025
+var screen_shake_amount_on_slide : float = 0.05
 
 func ledge_detect():
 	var first_hit_point = ledge_detection_forward_ray.get_collision_point()
@@ -86,12 +86,12 @@ func _unhandled_input(event):
 func _physics_process(delta):
 	if is_sliding:
 		sliding(delta)
-		fps_camera.rotation.z = lerp_angle(fps_camera.rotation.z, -50.0, delta * 10)
+		shakeable_camera.rotation.z = lerp_angle(shakeable_camera.rotation.z, -50.0, delta * 10)
 		collision_shape_3d.shape.height = lerp(collision_shape_3d.shape.height, height_sliding, 10 * delta)
 	elif is_crouching:
 		collision_shape_3d.shape.height = lerp(collision_shape_3d.shape.height, height_crouching, 10 * delta)
 	else:
-		fps_camera.rotation.z = lerp_angle(fps_camera.rotation.z, 0.0, delta * 5)
+		shakeable_camera.rotation.z = lerp_angle(shakeable_camera.rotation.z, 0.0, delta * 5)
 		collision_shape_3d.shape.height = lerp(collision_shape_3d.shape.height, height_standing, 10 * delta)
 	ledge_detect()
 	if is_holding_on_to_ledge:
@@ -142,7 +142,7 @@ func _physics_process(delta):
 			last_direction_z = direction.z
 			handle_movement(direction, delta)
 	
-	if speed > walk_speed and Input.is_action_just_pressed("crouch"):
+	if speed > walk_speed and Input.is_action_just_pressed("crouch") && velocity.length() > 5:
 		slide()
 	elif Input.is_action_just_pressed("crouch") && is_on_floor():
 		crouch()
