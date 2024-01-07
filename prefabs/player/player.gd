@@ -6,6 +6,7 @@ var speed
 @export var walk_speed = 5.0
 @export var sprint_speed = 8.0
 @export var crouch_speed = 2.5
+@export var slide_speed = 12.0
 
 const JUMP_VELOCITY = 6.0
 
@@ -15,6 +16,7 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 @onready var head = $Head
 @onready var fps_camera = $Head/ShakeableCamera/CamHolder/FPSCamera
 @onready var shakeable_camera = $Head/ShakeableCamera
+@onready var cam_holder = $Head/ShakeableCamera/CamHolder
 
 #Head Bob
 @export var head_bob_frequency = 2.0
@@ -47,6 +49,14 @@ var is_crouching = false
 var has_landed : bool = false
 var air_time : float = 0.0
 
+#Sliding
+var is_sliding : bool = false
+var last_direction_x : float
+var last_direction_z : float
+@export var height_sliding : float = 0.4
+var initial_slide_speed : float = 15.0
+var current_slide_speed : float
+var screen_shake_amount_on_slide : float = 0.025
 
 func ledge_detect():
 	var first_hit_point = ledge_detection_forward_ray.get_collision_point()
@@ -74,9 +84,14 @@ func _unhandled_input(event):
 
 
 func _physics_process(delta):
-	if is_crouching:
+	if is_sliding:
+		sliding(delta)
+		fps_camera.rotation.z = lerp_angle(fps_camera.rotation.z, -50.0, delta * 10)
+		collision_shape_3d.shape.height = lerp(collision_shape_3d.shape.height, height_sliding, 10 * delta)
+	elif is_crouching:
 		collision_shape_3d.shape.height = lerp(collision_shape_3d.shape.height, height_crouching, 10 * delta)
 	else:
+		fps_camera.rotation.z = lerp_angle(fps_camera.rotation.z, 0.0, delta * 5)
 		collision_shape_3d.shape.height = lerp(collision_shape_3d.shape.height, height_standing, 10 * delta)
 	ledge_detect()
 	if is_holding_on_to_ledge:
@@ -98,10 +113,17 @@ func _physics_process(delta):
 		air_time += delta
 		if has_landed:
 			has_landed = false
-		velocity.y -= gravity * delta
+		if is_sliding or is_crouching:
+			velocity.y -= (gravity * 2) * delta
+		else:
+			velocity.y -= gravity * delta
 	
 	if Input.is_action_just_pressed("jump") and is_on_floor() and not is_crouching:
-		velocity.y = JUMP_VELOCITY
+		if is_sliding:
+			stand_up_from_slide()
+			velocity.y = JUMP_VELOCITY * 1.25
+		else:
+			velocity.y = JUMP_VELOCITY
 
 	if is_crouching:
 		speed = crouch_speed
@@ -113,13 +135,20 @@ func _physics_process(delta):
 		
 	var input_dir = Input.get_vector("left", "right", "up", "down")
 	var direction = (head.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
-	if !is_holding_on_to_ledge:
-		handle_movement(direction, delta)
 	
-	if Input.is_action_just_pressed("crouch"):
+	if !is_holding_on_to_ledge:
+		if !is_sliding:
+			last_direction_x = direction.x
+			last_direction_z = direction.z
+			handle_movement(direction, delta)
+	
+	if speed > walk_speed and Input.is_action_just_pressed("crouch"):
+		slide()
+	elif Input.is_action_just_pressed("crouch") && is_on_floor():
 		crouch()
 	if Input.is_action_just_released("crouch"):
 		stand_up_from_crouch()
+		stand_up_from_slide()
 	
 	handle_head_bob(delta)
 	
@@ -150,6 +179,7 @@ func handle_fov(delta):
 
 
 func handle_head_bob(delta):
+	if is_sliding: return
 	head_bob_time += delta * velocity.length() * float(is_on_floor())
 	fps_camera.transform.origin = head_bob(head_bob_time)
 
@@ -187,8 +217,26 @@ func camera_tilt(x, z, delta):
 
 func crouch():
 	is_crouching = true
-	collision_shape_3d.shape.height = height_crouching
 	
 
 func stand_up_from_crouch():
 	is_crouching = false
+
+
+func stand_up_from_slide():
+	is_sliding = false
+
+
+func slide():
+	is_sliding = true
+	current_slide_speed = initial_slide_speed
+	
+
+func sliding(delta):
+	if is_on_floor():
+		on_screen_shake.emit(screen_shake_amount_on_slide)
+		current_slide_speed -= delta * 10
+		velocity.x = last_direction_x * current_slide_speed
+		velocity.z = last_direction_z * current_slide_speed
+	if current_slide_speed <= 0:
+		stand_up_from_slide()
