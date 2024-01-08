@@ -44,6 +44,7 @@ var is_crouching = false
 @export var height_standing = 1.8
 @export var height_crouching = 0.8
 @onready var collision_shape_3d = $CollisionShape3D as CollisionShape3D
+@onready var ceiling_check_ray = $CeilingCheckRay
 
 # Land Shake
 var has_landed : bool = false
@@ -220,10 +221,12 @@ func crouch():
 	
 
 func stand_up_from_crouch():
+	if ceiling_check_ray.is_colliding(): return
 	is_crouching = false
 
 
 func stand_up_from_slide():
+	if ceiling_check_ray.is_colliding(): return
 	is_sliding = false
 
 
