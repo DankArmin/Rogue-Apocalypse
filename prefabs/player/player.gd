@@ -243,3 +243,4 @@ func sliding(delta):
 		velocity.z = last_direction_z * current_slide_speed
 	if current_slide_speed <= 0:
 		stand_up_from_slide()
+		crouch()

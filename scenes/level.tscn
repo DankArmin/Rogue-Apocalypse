@@ -109,6 +109,12 @@ use_collision = true
 size = Vector3(4, 6, 4)
 material = SubResource("StandardMaterial3D_gswel")
 
+[node name="Box5" type="CSGBox3D" parent="Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.42525, 9, -12)
+use_collision = true
+size = Vector3(4, 6, 4)
+material = SubResource("StandardMaterial3D_gswel")
+
 [node name="Box4" type="CSGBox3D" parent="Terrain"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.42525, 2.50099, -9)
 use_collision = true
