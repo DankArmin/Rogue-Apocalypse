@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://prefabs/player/player.gd" id="1_f5h5v"]
 [ext_resource type="Script" path="res://prefabs/player/ShakeableCamera.gd" id="2_fw3m3"]
 [ext_resource type="Script" path="res://prefabs/systems/interactables/interact_ray.gd" id="2_y4bjj"]
-[ext_resource type="Texture2D" uid="uid://dxtcve7nhs6mj" path="res://prefabs/prototyping/templategrid_albedo.tres" id="3_rqocp"]
+[ext_resource type="Texture2D" uid="uid://b5cr6w3tdx8dy" path="res://sprites/crosshair-base.png" id="5_y0ga1"]
 [ext_resource type="Shader" path="res://prefabs/player/vignette.gdshader" id="6_x247n"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_vi6v7"]
@@ -113,6 +113,7 @@ collision_mask = 2
 shape = SubResource("SphereShape3D_0f63j")
 
 [node name="TextureRect" type="TextureRect" parent="."]
+modulate = Color(1, 1, 1, 0.25)
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -124,9 +125,9 @@ offset_right = 2048.0
 offset_bottom = 2048.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(0.005, 0.005)
+scale = Vector2(0.002, 0.002)
 pivot_offset = Vector2(2048, 2048)
-texture = ExtResource("3_rqocp")
+texture = ExtResource("5_y0ga1")
 
 [node name="CeilingCheckRay" type="RayCast3D" parent="."]
 transform = Transform3D(30, 0, 0, 0, 1, 0, 0, 0, 30, 0, 0.885354, 0)
